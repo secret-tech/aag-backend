@@ -9,6 +9,7 @@ services:
       - mongo
     ports:
       - "3000:3000"
+      - "9000:9000"
       - "9229:9229"
     env_file: .env
     volumes:
@@ -19,7 +20,7 @@ services:
     image: mongo
     container_name: mongo
     ports:
-      - "27017"
+      - "27017:27017"
     command: mongod --smallfiles --logpath=/dev/null # --quiet
     environment:
           - MONGO_DATA_DIR=/data/db

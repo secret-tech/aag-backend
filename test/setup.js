@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
-import MongodbMemoryServer from 'mongodb-memory-server'
 import mongoose from '../src/services/mongoose'
+import { mongo } from '../src/config'
 
 EventEmitter.defaultMaxListeners = Infinity
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
@@ -24,9 +24,7 @@ global.parseFloat = parseFloat
 let mongoServer
 
 beforeAll(async () => {
-  mongoServer = new MongodbMemoryServer()
-  const mongoUri = await mongoServer.getConnectionString()
-  await mongoose.connect(mongoUri, (err) => {
+  await mongoose.connect(mongo.uri, (err) => {
     if (err) console.error(err)
   })
 })
