@@ -3,15 +3,14 @@ import { success } from '../../services/response/'
 import User from '../user/model'
 
 export const login = ({ user }, res, next) => {
-  if (user) {
+  if (user.id) {
     console.log("user:", user)
     sign(user.id)
     .then((token) => ({ token, user: user.view(true) }))
     .then(success(res, 201))
     .catch(next)
   } else {
-    success({ user: null }, 200)
-    .catch(next)
+    res.status(200).json({user: null})
   }
 }
 

@@ -32,7 +32,7 @@ passport.use('facebook', new BearerStrategy((token, done) => {
           User.createFromService(user, false)
           done(null, dbUser)      
         }
-        return null
+        done(null, {})
       });
   }).catch(done)
 }))
