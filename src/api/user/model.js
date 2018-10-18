@@ -2,7 +2,8 @@ import crypto from 'crypto'
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
 
-const roles = ['user', 'admin']
+const roles = ['user', 'advisor', 'admin']
+const genders = ['male', 'female', 'other']
 
 const userSchema = new Schema({
   email: {
@@ -15,8 +16,21 @@ const userSchema = new Schema({
   },
   name: {
     type: String,
-    index: true,
+    required: true,
     trim: true
+  },
+  gender: {
+    type: String,
+    enum: genders,
+    required: true,
+  },
+  birthday: {
+    type: Date,
+    required: false,
+  },
+  age: {        //  "birthday": "02/19/1993"
+    type: Number,
+    required: false
   },
   services: {
     facebook: String
@@ -24,6 +38,7 @@ const userSchema = new Schema({
   role: {
     type: String,
     enum: roles,
+    required: true,
     default: 'user'
   },
   picture: {
@@ -40,17 +55,13 @@ userSchema.path('email').set(function (email) {
     this.picture = `https://gravatar.com/avatar/${hash}?d=identicon`
   }
 
-  if (!this.name) {
-    this.name = email.replace(/^(.+)@.+$/, '$1')
-  }
-
   return email
 })
 
 userSchema.methods = {
   view (full) {
     let view = {}
-    let fields = ['id', 'name', 'picture']
+    let fields = ['id', 'name', 'picture', 'gender', 'age', 'role']
 
     if (full) {
       fields = [...fields, 'email', 'createdAt']
@@ -63,16 +74,23 @@ userSchema.methods = {
 
 userSchema.statics = {
   roles,
+  genders,
 
-  createFromService ({ service, id, email, name, picture }) {
+  createFromService ({ service, id, email, name, picture, gender, birthday, role }) {
     return this.findOne({ $or: [{ [`services.${service}`]: id }, { email }] }).then((user) => {
       if (user) {
         user.services[service] = id
         user.name = name
         user.picture = picture
+        user.gender = gender
+        // if (birthday) {
+        user.age = 21 //@TODO: implement age
+        // }
+        user.birthday = birthday
+        user.role = role
         return user.save()
       } else {
-        return this.create({ services: { [service]: id }, email, name, picture })
+        return this.create({ services: { [service]: id }, age: 21, email, name, picture, gender, role, birthday }) //@TODO: implement age
       }
     })
   }

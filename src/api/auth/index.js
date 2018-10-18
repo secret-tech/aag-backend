@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { login } from './controller'
-import { facebook } from '../../services/passport'
+import { login, register } from './controller'
+import { facebook, registerFacebook } from '../../services/passport'
 
 const router = new Router()
 
@@ -16,5 +16,9 @@ const router = new Router()
 router.post('/facebook',
   facebook(),
   login)
+
+router.post('/registerFacebok',
+  registerFacebook(),
+  register)
 
 export default router

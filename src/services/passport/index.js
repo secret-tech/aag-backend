@@ -8,6 +8,9 @@ import User from '../../api/user/model'
 export const facebook = () =>
   passport.authenticate('facebook', { session: false })
 
+export const registerFacebook = () =>
+  passport.authenticate('registerFacebook', { session: false })
+
 export const master = () =>
   passport.authenticate('master', { session: false })
 
@@ -24,10 +27,26 @@ export const token = ({ required, roles = User.roles } = {}) => (req, res, next)
 
 passport.use('facebook', new BearerStrategy((token, done) => {
   facebookService.getUser(token).then((user) => {
-    return User.createFromService(user)
+      User.findOne({ email: user.email }).then((dbUser) => {
+        if (dbUser) {
+          return User.createFromService(user)      
+        }
+        return {exists: false};
+      });
   }).then((user) => {
     done(null, user)
     return null
+  }).catch(done)
+}))
+
+passport.use('registerFacebook', new BearerStrategy((token, done) => {
+  facebookService.getUser(token).then((user) => {
+      User.findOne({ email: user.email }).then((dbUser) => {
+        if (!dbUser) {
+          done(null, user)
+        }
+        return null
+      });
   }).catch(done)
 }))
 

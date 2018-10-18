@@ -6,12 +6,14 @@ export const getUser = (accessToken) =>
     json: true,
     qs: {
       access_token: accessToken,
-      fields: 'id, name, email, picture'
+      fields: 'id, name, email, picture, gender, birthday'
     }
-  }).then(({ id, name, email, picture }) => ({
+  }).then(({ id, name, email, picture, gender, birthday }) => ({
     service: 'facebook',
     picture: picture.data.url,
     id,
     name,
-    email
+    email,
+    gender,
+    birthday,
   }))
