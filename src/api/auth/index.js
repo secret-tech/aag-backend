@@ -17,7 +17,7 @@ router.post('/facebook',
   facebook(),
   login)
 
-router.post('/registerFacebok',
+router.post('/registerFacebook',
   registerFacebook(),
   register)
 
