@@ -29,13 +29,11 @@ passport.use('facebook', new BearerStrategy((token, done) => {
   facebookService.getUser(token).then((user) => {
       User.findOne({ email: user.email }).then((dbUser) => {
         if (dbUser) {
-          return User.createFromService(user)      
+          User.createFromService(user, false)
+          done(null, dbUser)      
         }
-        return {exists: false};
+        return null
       });
-  }).then((user) => {
-    done(null, user)
-    return null
   }).catch(done)
 }))
 

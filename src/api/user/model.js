@@ -76,7 +76,7 @@ userSchema.statics = {
   roles,
   genders,
 
-  createFromService ({ service, id, email, name, picture, gender, birthday, role }) {
+  createFromService ({ service, id, email, name, picture, gender, birthday, role }, create) {
     return this.findOne({ $or: [{ [`services.${service}`]: id }, { email }] }).then((user) => {
       if (user) {
         user.services[service] = id
@@ -87,10 +87,9 @@ userSchema.statics = {
         user.age = 21 //@TODO: implement age
         // }
         user.birthday = birthday
-        user.role = role
         return user.save()
       } else {
-        return this.create({ services: { [service]: id }, age: 21, email, name, picture, gender, role, birthday }) //@TODO: implement age
+        if(create) return this.create({ services: { [service]: id }, age: 21, email, name, picture, gender, role, birthday }) //@TODO: implement age
       }
     })
   }
