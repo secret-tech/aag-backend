@@ -44,6 +44,12 @@ const userSchema = new Schema({
   picture: {
     type: String,
     trim: true
+  },
+  bio: {
+    type: String
+  },
+  tags: {
+    type: [String]
   }
 }, {
   timestamps: true
@@ -61,10 +67,10 @@ userSchema.path('email').set(function (email) {
 userSchema.methods = {
   view (full) {
     let view = {}
-    let fields = ['id', 'name', 'picture', 'gender', 'age', 'role']
+    let fields = ['id', 'name', 'picture', 'gender', 'age', 'role', 'tags']
 
     if (full) {
-      fields = [...fields, 'email', 'createdAt']
+      fields = [...fields, 'email', 'createdAt', 'bio']
     }
 
     fields.forEach((field) => { view[field] = this[field] })

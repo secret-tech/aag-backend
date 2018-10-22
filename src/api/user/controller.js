@@ -66,3 +66,25 @@ export const destroy = ({ params }, res, next) =>
     .then((user) => user ? user.remove() : null)
     .then(success(res, 204))
     .catch(next)
+
+
+export const updateTags = ({bodymen: {body}, params, user}, res, next) => {
+  User.findById(user.id)
+    .then(notFound(res))
+    .then((user) => {
+      user.tags = body.tags
+      user.save()
+      res.status(200).json(user)
+    });
+}
+
+
+export const updateBio = ({bodymen: {body}, params, user}, res, next) => {
+  User.findById(user.id)
+    .then(notFound(res))
+    .then((user) => {
+      user.bio = body.bio
+      user.save()
+      res.status(200).json(user)
+    });
+}

@@ -2,12 +2,12 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { master, token } from '../../services/passport'
-import { index, showMe, show, create, update, destroy } from './controller'
+import { index, showMe, show, create, update, destroy, updateTags, updateBio } from './controller'
 import { schema } from './model'
 export User, { schema } from './model'
 
 const router = new Router()
-const { email, name, picture, role } = schema.tree
+const { email, name, picture, role, tags, bio } = schema.tree
 
 /**
  * @api {get} /users Retrieve users
@@ -67,6 +67,16 @@ router.post('/',
   master(),
   body({ email, name, picture, role }),
   create)
+
+router.post('/tags',
+  token({required: true}),
+  body({ tags }),
+  updateTags)
+
+router.post('/bio',
+  token({required: true}),
+  body({ bio }),
+  updateBio)
 
 /**
  * @api {put} /users/:id Update user
