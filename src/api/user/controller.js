@@ -105,7 +105,7 @@ export const addFakeAdvisors = (req, res, next) => {
         gender: 'female',
         role: 'advisor',
         birthday: faker.date.past(),
-        picture: faker.image.fashion(),
+        picture: 'https://api.adorable.io/avatars/500/' + faker.internet.email() + '.png',
         bio: faker.lorem.paragraph(),
         tags: tags,
         featured: Math.random() < 0.1,
