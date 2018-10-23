@@ -50,6 +50,9 @@ const userSchema = new Schema({
   },
   tags: {
     type: [String]
+  },
+  featured: {
+    type: Boolean
   }
 }, {
   timestamps: true
@@ -97,6 +100,21 @@ userSchema.statics = {
       } else {
         if(create) return this.create({ services: { [service]: id }, age: 21, email, name, picture, gender, role, birthday }) //@TODO: implement age
       }
+    })
+  },
+  findFeatured (cursor) {
+    return this.find({featured:  true}, {}, cursor).then((users) => {
+      return users
+    })
+  },
+  findNew ({ limit, skip }) {
+    return this.find({role:  'advisor'}, {}, {limit, skip, sort: {createdAt: -1}}).then((users) => {
+      return users
+    })
+  },
+  findOnline (cursor) {
+    return this.find({role: 'advisor'}, {}, cursor).then((users) => {
+      return users
     })
   }
 }

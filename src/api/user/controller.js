@@ -1,5 +1,6 @@
 import { success, notFound } from '../../services/response/'
 import { User } from '.'
+import faker from 'faker'
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   User.count(query)
@@ -87,4 +88,29 @@ export const updateBio = ({bodymen: {body}, params, user}, res, next) => {
       user.save()
       res.status(200).json(user)
     });
+}
+
+export const addFakeAdvisors = (req, res, next) => {
+  let users = []
+  console.log("Start faking data")
+  for(let i = 0; i < 100; i++)  {
+    let tags = []
+    const kw =  Math.floor(Math.random()*10) + 1
+    for(let j = 0; j < kw; j++) {
+      tags.push(faker.lorem.word())
+    }
+    const advisor = {
+        email: faker.internet.email(),
+        name: faker.name.firstName() + ' ' + faker.name.lastName(),
+        gender: 'female',
+        role: 'advisor',
+        birthday: faker.date.past(),
+        picture: faker.image.fashion(),
+        bio: faker.lorem.paragraph(),
+        tags: tags,
+        featured: Math.random() < 0.1,
+    }
+    User.create(advisor)
+  }
+  res.status(200).json({status: "ok"})
 }

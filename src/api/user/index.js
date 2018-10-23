@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { master, token } from '../../services/passport'
-import { index, showMe, show, create, update, destroy, updateTags, updateBio } from './controller'
+import { index, showMe, show, create, update, destroy, updateTags, updateBio, addFakeAdvisors } from './controller'
 import { schema } from './model'
 export User, { schema } from './model'
 
@@ -36,6 +36,9 @@ router.get('/',
 router.get('/me',
   token({ required: true }),
   showMe)
+
+router.get('/faker',
+  addFakeAdvisors)
 
 /**
  * @api {get} /users/:id Retrieve user
@@ -95,6 +98,7 @@ router.put('/:id',
   token({ required: true }),
   body({ name, picture }),
   update)
+
 
 /**
  * @api {delete} /users/:id Delete user
