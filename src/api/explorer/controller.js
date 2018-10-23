@@ -13,7 +13,11 @@ export const explore = ({ querymen: { cursor } }, res, next) => {
     User.findFeatured(cursor).then((featured) => {
         User.findNew(cursor).then((newAdvisors) => {
             User.findOnline(cursor).then((online) => {
-                res.status(200).json({ featured, online, new: newAdvisors })
+                res.status(200).json([
+                    { type: 'featured', advisors: featured }, 
+                    {type: 'online', advisors: online }, 
+                    {type: 'new', advisors: newAdvisors }
+                ])
             })
         })
     })
