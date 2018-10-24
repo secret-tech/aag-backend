@@ -45,6 +45,9 @@ const userSchema = new Schema({
     type: String,
     trim: true
   },
+  pictures: {
+    type: [String]
+  },
   bio: {
     type: String
   },
@@ -73,7 +76,7 @@ userSchema.methods = {
     let fields = ['id', 'name', 'picture', 'gender', 'age', 'role', 'tags']
 
     if (full) {
-      fields = [...fields, 'email', 'createdAt', 'bio']
+      fields = [...fields, 'email', 'createdAt', 'bio', 'pictures']
     }
 
     fields.forEach((field) => { view[field] = this[field] })

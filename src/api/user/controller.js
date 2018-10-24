@@ -92,10 +92,21 @@ export const updateBio = ({bodymen: {body}, params, user}, res, next) => {
 
 export const addFakeAdvisors = (req, res, next) => {
   let users = []
+  const pictures = [
+    'https://images.pexels.com/photos/875862/pexels-photo-875862.png?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    'https://images.pexels.com/photos/735552/pexels-photo-735552.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    'https://images.pexels.com/photos/445109/pexels-photo-445109.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    'https://images.pexels.com/photos/415276/pexels-photo-415276.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    'https://images.pexels.com/photos/580631/pexels-photo-580631.png?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    'https://images.pexels.com/photos/206434/pexels-photo-206434.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    'https://images.pexels.com/photos/185517/pexels-photo-185517.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+  ]
   console.log("Start faking data")
   for(let i = 0; i < 100; i++)  {
     let tags = []
     const kw =  Math.floor(Math.random()*10) + 1
+    const avatarIndex = Math.floor(Math.random() * 7)
     for(let j = 0; j < kw; j++) {
       tags.push(faker.lorem.word())
     }
@@ -105,10 +116,11 @@ export const addFakeAdvisors = (req, res, next) => {
         gender: 'female',
         role: 'advisor',
         birthday: faker.date.past(),
-        picture: 'https://api.adorable.io/avatars/500/' + faker.internet.email() + '.png',
+        picture: pictures[avatarIndex],//'https://api.adorable.io/avatars/500/' + faker.internet.email() + '.png',
         bio: faker.lorem.paragraph(),
         tags: tags,
         featured: Math.random() < 0.1,
+        pictures
     }
     User.create(advisor)
   }
