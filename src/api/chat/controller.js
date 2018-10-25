@@ -17,7 +17,7 @@ export const listConversations = ({body, params, user}, res, next) => {
                 }
             })
             res.status(200).json({ conversations })
-        });
+        })
 }
 
 export const createConversation = ({ body, params, user }, res, next) => {
@@ -28,7 +28,12 @@ export const createConversation = ({ body, params, user }, res, next) => {
         if (existingConversations.length > 0) {
             const conv = existingConversations[0]
             Conversation.findById(conv._id).populate('userOne').populate('userTwo').then((conversation) => {
-                res.status(200).json({conversation})
+                const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+                res.status(200).json({ conversation: {
+                    _id: conversation._id,
+                    messages: conversation.messages,
+                    friend
+                } })
             })
         } else {
             User.findById(body.userId).then((friend) => {
@@ -41,14 +46,15 @@ export const createConversation = ({ body, params, user }, res, next) => {
                     user.save()
                     friend.conversations.push(conversation)
                     friend.save()
-                    conversation.userOne = user
-                    conversation.userTwo = friend
-                    res.status(200).json({ conversation })
-                });
-                },
-            );
+                    res.status(200).json({ conversation: {
+                        _id: conversation._id,
+                        messages: conversation.messages,
+                        friend
+                    } })
+                })
+            })
         }
-    });
+    })
 }
 
 
@@ -57,10 +63,16 @@ export const createMessage = (message) => {
         const textMessage = new Message({
           text: message.text,
           userId: message.senderId,
-        });
+        })
         textMessage.save().then((savedMessage) => {
           conversation.messages.push(savedMessage);
-          conversation.save();
-        });
-    });
+          conversation.save()
+        })
+    })
+}
+
+export const loadMessages = (conversationId) => {
+    Conversation.findById(request.params.conversationId).populate('messages').then((conversation) => {
+        return conversation
+    })
 }
