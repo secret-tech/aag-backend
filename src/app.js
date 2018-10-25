@@ -14,7 +14,7 @@ const sockets = {};
 const sock = io.of('/')
 
 io.use((socket, next) => {
-  token({required: true})(socket.request, {}, next)
+  token()(socket.request, {}, next)
 })
 
 mongoose.connect(mongo.uri)
