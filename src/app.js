@@ -4,6 +4,7 @@ import mongoose from './services/mongoose'
 import express from './services/express'
 import api from './api'
 import * as socketio from 'socket.io';
+import { createMessage } from './api/chat/controller'
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
@@ -31,7 +32,7 @@ sock.on('connection', (socket) => {
     if (sockets[message.receiverId]) {
       sockets[message.receiverId].emit('message', message);
     }
-    /* handler for creating message */
+    createMessage(message)
   });
   socket.on('disconnect', (userId) => {
     delete sockets[userId.senderId];

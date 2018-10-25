@@ -1,5 +1,6 @@
 import User from '../user/model'
 import Conversation  from './conversation.model'
+import Message from './message.model'
 
 
 export const listConversations = ({body, params, user}, res, next) => {
@@ -7,7 +8,15 @@ export const listConversations = ({body, params, user}, res, next) => {
         .populate({path: 'conversations', populate: { path: 'userOne' }})
         .populate({path: 'conversations', populate: { path: 'userTwo' }})
         .then((user) => {
-            res.status(200).json({ conversations: user.conversations })
+            const conversations = user.conversations.map((conversation) => {
+                const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+                return {
+                    _id: conversation._id,
+                    messages: conversation.messages,
+                    friend
+                }
+            })
+            res.status(200).json({ conversations })
         });
 }
 
@@ -40,5 +49,18 @@ export const createConversation = ({ body, params, user }, res, next) => {
             );
         }
     });
+}
 
+
+export const createMessage = (message) => {
+    Conversation.findById(message.conversationId).then((conversation) => {
+        const textMessage = new Message({
+          text: message.text,
+          userId: message.senderId,
+        });
+        textMessage.save().then((savedMessage) => {
+          conversation.messages.push(savedMessage);
+          conversation.save();
+        });
+    });
 }
