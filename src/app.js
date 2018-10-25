@@ -4,8 +4,8 @@ import mongoose from './services/mongoose'
 import express from './services/express'
 import api from './api'
 import * as socketio from 'socket.io';
-import { createMessage } from './api/chat/controller'
-import { token } from './services/passport'
+import { createMessage, loadMessages } from './api/chat/controller'
+import { verify } from './services/jwt'
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
@@ -14,7 +14,16 @@ const sockets = {};
 const sock = io.of('/')
 
 io.use((socket, next) => {
-  token()(socket.request, {}, next)
+  if (socket.handshake.query && socket.handshake.query.token){
+    verify(socket.handshake.query.token, function(err, decoded) {
+      if(err) return next(new Error('Authentication error'));
+      socket.decoded = decoded;
+      console.log(decoded)
+      next();
+    });
+  } else {
+      next(new Error('Authentication error'));
+  }    
 })
 
 mongoose.connect(mongo.uri)
@@ -26,12 +35,14 @@ setImmediate(() => {
   })
 })
 
-sock.on('connection', (socket) => {
+sock.on('connection', async (socket) => {
   console.log("Auth ", socket.request.user);
-
-  socket.on('init', (userId) => {
-    sockets[userId.senderId] = socket;
+  socket.on('init', (initData) => {
+    sockets[initData.senderId] = socket;
+    const conversation = await loadMessages(initData.conversationId)
+    sockets[initData.senderId].emit('loadMessages', conversation.messages)
   });
+
   socket.on('message', (message) => {
     if (sockets[message.receiverId]) {
       sockets[message.receiverId].emit('message', message);
