@@ -15,8 +15,7 @@ const sock = io.of('/')
 
 io.use((socket, next) => {
   if (socket.handshake.query && socket.handshake.query.token){
-    verify(socket.handshake.query.token, function(err, decoded) {
-      if(err) return next(new Error('Authentication error'));
+    verify(socket.handshake.query.token, function(decoded) {
       socket.decoded = decoded;
       console.log(decoded)
       next();
