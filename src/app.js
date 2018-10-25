@@ -8,8 +8,9 @@ const app = express(apiRoot, api)
 const server = http.createServer(app)
 const socketio = require('socket.io')(server);
 const sockets = {};
+const sock = socketio.of('/')
 
-socketio.on('connection', (socket) => {
+sock.on('connection', (socket) => {
   console.log('Socket connection');
   socket.on('init', (userId) => {
     sockets[userId.senderId] = socket;
