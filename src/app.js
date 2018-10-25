@@ -13,15 +13,11 @@ const io = socketio.listen(server);
 const sockets = {};
 const sock = io.of('/')
 
-io.use((socket, next) => {
+io.use(async (socket, next) => {
   console.log("Begin middleware")
   if (socket.handshake.query && socket.handshake.query.token){
-    console.log("Handshake exists")
-    verify(socket.handshake.query.token, function(decoded) {
-      socket.decoded = decoded;
-      console.log(decoded)
-      next();
-    });
+    const decoded = await verify(socket.handshake.query.token);
+    console.log('Decoded ', decoded)
   } else {
       console.log("No toke in handshake")
       next(new Error('Authentication error'));
