@@ -16,11 +16,15 @@ const sock = io.of('/')
 
 io.use(async (socket, next) => {
   if (socket.handshake.query && socket.handshake.query.token){
-    const decoded = await verify(socket.handshake.query.token);
-    if(decoded.id) {
-      socket.request.user = await User.findById(decoded.id)
-      next()
-    } else {
+    try {
+      const decoded = await verify(socket.handshake.query.token);
+      if(decoded.id) {
+        socket.request.user = await User.findById(decoded.id)
+        next()
+      } else {
+        next(new Error('Authentication error'));
+      }
+    } catch(err) {
       next(new Error('Authentication error'));
     }
   } else {
@@ -38,6 +42,7 @@ setImmediate(() => {
 })
 
 sock.on('connection', async (socket) => {
+  
   socket.on('init', async (initData) => {
     sockets[socket.request.user._id.toString()] = socket;
     const conversation = await loadMessages(initData.conversationId)
