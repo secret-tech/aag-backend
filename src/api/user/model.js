@@ -56,7 +56,11 @@ const userSchema = new Schema({
   },
   featured: {
     type: Boolean
-  }
+  },
+  conversations: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Conversation',
+  }]
 }, {
   timestamps: true
 })
