@@ -37,7 +37,7 @@ setImmediate(() => {
 
 sock.on('connection', async (socket) => {
   console.log("Auth ", socket.request.user);
-  socket.on('init', (initData) => {
+  socket.on('init', async (initData) => {
     sockets[initData.senderId] = socket;
     const conversation = await loadMessages(initData.conversationId)
     sockets[initData.senderId].emit('loadMessages', conversation.messages)
