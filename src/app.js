@@ -11,6 +11,8 @@ const io = socketio.listen(server);
 const sockets = {};
 const sock = io.of('/')
 
+console.log("Socket: ", sock)
+
 mongoose.connect(mongo.uri)
 mongoose.Promise = Promise
 
