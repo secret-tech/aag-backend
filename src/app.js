@@ -6,6 +6,7 @@ import api from './api'
 import * as socketio from 'socket.io';
 import { createMessage, loadMessages } from './api/chat/controller'
 import { verify } from './services/jwt'
+import User from './api/user/model'
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
@@ -17,9 +18,13 @@ io.use(async (socket, next) => {
   console.log("Begin middleware")
   if (socket.handshake.query && socket.handshake.query.token){
     const decoded = await verify(socket.handshake.query.token);
-    console.log('Decoded ', decoded)
+    if(decoded.id) {
+      socket.request.user = await User.findById(decoded.id)
+      next()
+    } else {
+      next(new Error('Authentication error'));
+    }
   } else {
-      console.log("No toke in handshake")
       next(new Error('Authentication error'));
   }    
 })
