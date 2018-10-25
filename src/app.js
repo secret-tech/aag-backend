@@ -15,7 +15,6 @@ const sockets = {};
 const sock = io.of('/')
 
 io.use(async (socket, next) => {
-  console.log("Begin middleware")
   if (socket.handshake.query && socket.handshake.query.token){
     const decoded = await verify(socket.handshake.query.token);
     if(decoded.id) {
@@ -39,11 +38,10 @@ setImmediate(() => {
 })
 
 sock.on('connection', async (socket) => {
-  console.log("Auth ", socket.request.user);
   socket.on('init', async (initData) => {
-    sockets[initData.senderId] = socket;
+    sockets[socket.request.user._id.toString()] = socket;
     const conversation = await loadMessages(initData.conversationId)
-    sockets[initData.senderId].emit('loadMessages', conversation.messages)
+    sockets[socket.request.user._id.toString()].emit('loadMessages', conversation.messages)
   });
 
   socket.on('message', (message) => {
@@ -52,6 +50,7 @@ sock.on('connection', async (socket) => {
     }
     createMessage(message)
   });
+  
   socket.on('disconnect', (userId) => {
     delete sockets[userId.senderId];
   });
