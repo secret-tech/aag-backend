@@ -22,6 +22,7 @@ io.use((socket, next) => {
       next();
     });
   } else {
+      console.log("No toke in handshake")
       next(new Error('Authentication error'));
   }    
 })
