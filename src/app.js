@@ -14,7 +14,9 @@ const sockets = {};
 const sock = io.of('/')
 
 io.use((socket, next) => {
+  console.log("Begin middleware")
   if (socket.handshake.query && socket.handshake.query.token){
+    console.log("Handshake exists")
     verify(socket.handshake.query.token, function(decoded) {
       socket.decoded = decoded;
       console.log(decoded)
