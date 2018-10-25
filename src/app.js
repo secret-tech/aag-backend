@@ -3,17 +3,21 @@ import { env, mongo, port, ip, apiRoot } from './config'
 import mongoose from './services/mongoose'
 import express from './services/express'
 import api from './api'
+import * as socketio from 'socket.io';
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
-const socketio = require('socket.io')(server);
+const io = socketio(server);
 const sockets = {};
-const sock = socketio.of('/')
+const sock = io.of('/')
 
 mongoose.connect(mongo.uri)
 mongoose.Promise = Promise
 
 setImmediate(() => {
+  server.listen(port, ip, () => {
+    console.log('Express server listening on http://%s:%d, in %s mode', ip, port, env)
+  })
   sock.on('connection', (socket) => {
     console.log('Socket connection');
     socket.on('init', (userId) => {
@@ -28,9 +32,6 @@ setImmediate(() => {
     socket.on('disconnect', (userId) => {
       delete sockets[userId.senderId];
     });
-  })
-  server.listen(port, ip, () => {
-    console.log('Express server listening on http://%s:%d, in %s mode', ip, port, env)
   })
 })
 
