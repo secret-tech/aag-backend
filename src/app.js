@@ -27,8 +27,8 @@ setImmediate(() => {
 })
 
 sock.on('connection', (socket) => {
-  console.log("Auth", socket.request);
-  
+  console.log("Auth ", socket.request.user);
+
   socket.on('init', (userId) => {
     sockets[userId.senderId] = socket;
   });
