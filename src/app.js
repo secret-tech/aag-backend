@@ -10,26 +10,25 @@ const socketio = require('socket.io')(server);
 const sockets = {};
 const sock = socketio.of('/')
 
-sock.on('connection', (socket) => {
-  console.log('Socket connection');
-  socket.on('init', (userId) => {
-    sockets[userId.senderId] = socket;
-  });
-  socket.on('message', (message) => {
-    if (sockets[message.receiverId]) {
-      sockets[message.receiverId].emit('message', message);
-    }
-    /* handler for creating message */
-  });
-  socket.on('disconnect', (userId) => {
-    delete sockets[userId.senderId];
-  });
-});
-
 mongoose.connect(mongo.uri)
 mongoose.Promise = Promise
 
 setImmediate(() => {
+  sock.on('connection', (socket) => {
+    console.log('Socket connection');
+    socket.on('init', (userId) => {
+      sockets[userId.senderId] = socket;
+    });
+    socket.on('message', (message) => {
+      if (sockets[message.receiverId]) {
+        sockets[message.receiverId].emit('message', message);
+      }
+      /* handler for creating message */
+    });
+    socket.on('disconnect', (userId) => {
+      delete sockets[userId.senderId];
+    });
+  })
   server.listen(port, ip, () => {
     console.log('Express server listening on http://%s:%d, in %s mode', ip, port, env)
   })
