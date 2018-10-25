@@ -6,6 +6,24 @@ import api from './api'
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
+const socketio = require('socket.io')(server);
+const sockets = {};
+
+socketio.on('connection', (socket) => {
+  console.log('Socket connection');
+  socket.on('init', (userId) => {
+    sockets[userId.senderId] = socket;
+  });
+  socket.on('message', (message) => {
+    if (sockets[message.receiverId]) {
+      sockets[message.receiverId].emit('message', message);
+    }
+    /* handler for creating message */
+  });
+  socket.on('disconnect', (userId) => {
+    delete sockets[userId.senderId];
+  });
+});
 
 mongoose.connect(mongo.uri)
 mongoose.Promise = Promise
