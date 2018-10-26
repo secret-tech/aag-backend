@@ -47,15 +47,11 @@ export const createConversation = ({ body, params, user }, res, next) => {
                     await user.save()
                     friend.conversations.push(conversation)
                     await friend.save()
-                    console.log("Conv: ", {
-                        _id: conversation._id,
-                        messages: conversation.messages,
-                        friend
-                    });
                     res.status(200).json({ conversation: {
                         _id: conversation._id,
                         messages: conversation.messages,
-                        friend
+                        friend,
+                        user
                     } })
                 })
             })
