@@ -30,6 +30,12 @@ export const createConversation = ({ body, params, user }, res, next) => {
             const conv = existingConversations[0]
             Conversation.findById(conv._id).populate('userOne').populate('userTwo').then((conversation) => {
                 const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+                console.log("CREATED CONVERSATION: ", {
+                    _id: conversation._id,
+                    messages: conversation.messages,
+                    friend,
+                    user
+                });
                 res.status(200).json({ conversation: {
                     _id: conversation._id,
                     messages: conversation.messages,
