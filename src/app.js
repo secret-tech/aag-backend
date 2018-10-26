@@ -50,7 +50,7 @@ sock.on('connection', async (socket, conversationId) => {
     if (sockets[message.receiverId]) {
       sockets[message.receiverId].emit('message', message);
     }
-    const textMessage = createMessage(message)
+    const textMessage = await createMessage(message)
     console.log(textMessage)
   });
   
