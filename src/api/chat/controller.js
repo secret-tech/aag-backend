@@ -77,6 +77,7 @@ export const loadMessages = async (user, conversationId) => {
         .populate({path: 'messages', populate: { path: 'user' }, options: { limit: 50, sort: {createdAt: -1} }})
         .populate('userOne')
         .populate('userTwo')
+        console.log("conv: ", conversationId, conversation);
     const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
     return {
         _id: conversation._id,
