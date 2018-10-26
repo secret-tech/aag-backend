@@ -83,6 +83,7 @@ export const loadMessages = async (user, conversationId) => {
         .populate('user')
         .limit(50)
         .sort({createdAt: -1})
+    console.log("Messages: ", messages)
     const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
     return {
         _id: conversation._id,

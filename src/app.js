@@ -55,6 +55,7 @@ sock.on('connection', async (socket, conversationId) => {
   });
 
   socket.on('loadMessages', async (request) => {
+    console.log("User: ", user)
     const messages = await loadMessages(user, request.conversationId)
     sockets[user._id.toString()].emit('messages', messages)
   })
