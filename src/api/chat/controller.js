@@ -42,11 +42,16 @@ export const createConversation = ({ body, params, user }, res, next) => {
                     userOne: user._id,
                     userTwo: friend._id,
                 })
-                newConversation.save().then((conversation) => {
+                newConversation.save().then(async (conversation) => {
                     user.conversations.push(conversation)
-                    user.save()
+                    await user.save()
                     friend.conversations.push(conversation)
-                    friend.save()
+                    await friend.save()
+                    console.log("Conv: ", {
+                        _id: conversation._id,
+                        messages: conversation.messages,
+                        friend
+                    });
                     res.status(200).json({ conversation: {
                         _id: conversation._id,
                         messages: conversation.messages,
@@ -85,7 +90,7 @@ export const loadMessages = async (user, conversationId) => {
     const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
     return {
         _id: conversation._id,
-        messages: conversation.messages,
+        messages: messages,
         friend,
         user
     }
