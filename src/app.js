@@ -50,7 +50,8 @@ sock.on('connection', async (socket, conversationId) => {
     if (sockets[message.receiverId]) {
       sockets[message.receiverId].emit('message', message);
     }
-    createMessage(message)
+    const textMessage = createMessage(message)
+    console.log(textMessage)
   });
   
   socket.on('disconnect', (userId) => {
