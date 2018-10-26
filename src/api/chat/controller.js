@@ -63,7 +63,7 @@ export const createMessage = (message) => {
     Conversation.findById(message.conversationId).then((conversation) => {
         const textMessage = new Message({
           text: message.text,
-          userId: message.senderId,
+          user: message.senderId,
         })
         textMessage.save().then((savedMessage) => {
           conversation.messages.push(savedMessage);
