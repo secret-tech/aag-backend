@@ -80,6 +80,7 @@ export const loadMessages = async (user, conversationId) => {
     return {
         _id: conversation._id,
         messages: conversation.messages,
-        friend
+        friend,
+        user
     }
 }
