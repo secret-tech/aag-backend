@@ -10,7 +10,8 @@ const messageSchema = new Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-    }
+    },
+    conversationId: { type: String }
 })
 
 const model = mongoose.model('Message', messageSchema)

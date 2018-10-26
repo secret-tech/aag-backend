@@ -64,6 +64,7 @@ export const createMessage = async (message) => {
     const textMessage = new Message({
         text: message.text,
         user: message.senderId,
+        conversationId: message.conversationId,
         _id: message._id
     })
     const savedMessage = await textMessage.save()
