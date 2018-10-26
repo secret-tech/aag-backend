@@ -11,12 +11,7 @@ export const listConversations = ({body, params, user}, res, next) => {
             const conversations = await user.conversations.map(async (conversation) => {
                 const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
                 if (conversation.messages.length > 0) {
-                    const promise = new Promise((resolve, reject) => {
-                        Message.findById(conversation.messages[conversation.messages.length - 1]).then((message) => {
-                            resolve(message)
-                        });
-                    })
-                    promise.then((message) => {
+                    Message.findById(conversation.messages[conversation.messages.length - 1]).then((message) => {
                         return {
                             _id: conversation._id,
                             messages:[message],
