@@ -11,13 +11,13 @@ export const listConversations = ({body, params, user}, res, next) => {
             const conversations = user.conversations.map(async (conversation) => {
                 const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
                 if (conversation.messages.length > 0) {
-                    Message.findById(conversation.messages[conversation.messages.length - 1]).then((message) => {
-                        return {
-                            _id: conversation._id,
-                            messages: [message],
-                            friend
-                        }
-                    })
+                    const message = await Message.findById(conversation.messages[conversation.messages.length - 1])
+                    console.log("message  ", message)
+                    return {
+                        _id: conversation._id,
+                        messages: [message],
+                        friend
+                    }
                 }
                 else {
                     return {
