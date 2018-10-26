@@ -42,10 +42,28 @@ setImmediate(() => {
 })
 
 sock.on('connection', async (socket, conversationId) => {
+  const user = socket.request.user
+  sockets[user._id.toString()] = socket
+  User.findOne({ email: user.email })
+    .populate({path: 'conversations', populate: { path: 'userOne' }})
+    .populate({path: 'conversations', populate: { path: 'userTwo' }})
+    .populate({path: 'conversations', populate: {
+        path: 'messages', populate: { path: 'user' }, options: { limit: 30, sort: {createdAt: -1} } 
+    }})
+    .then(async (user) => {
+        const conversations = await user.conversations.map((conversation) => {
+            const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+            return {
+                _id: conversation._id,
+                messages: conversation.messages,
+                friend,
+                user
+            }
+        })
+        sockets[user._id.toString()].emit('loadConversations', conversations)
+    })
   
-  sockets[socket.request.user._id.toString()] = socket;
-  const conversation = await loadMessages(socket.request.user, socket.handshake.query.conversationId)
-  sockets[socket.request.user._id.toString()].emit('loadConversation', conversation)
+  // const conversation = await loadMessages(socket.request.user, socket.handshake.query.conversationId)
   socket.on('message', async (message) => {
     if (sockets[message.receiverId]) {
       const textMessage = await createMessage(message)
