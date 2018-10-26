@@ -66,6 +66,7 @@ export const createMessage = (message) => {
           user: message.senderId,
         })
         textMessage.save().then((savedMessage) => {
+          console.log(savedMessage)
           conversation.messages.push(savedMessage);
           conversation.save()
         })
