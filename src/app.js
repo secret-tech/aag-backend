@@ -41,9 +41,9 @@ setImmediate(() => {
   })
 })
 
-sock.on('connection', async (socket) => {
+sock.on('connection', async (socket, conversationId) => {
   
-  console.log("conv_id: ", socket.request.conversationId, socket.request)
+  console.log("conv_id: ", socket.request.conversationId, conversationId)
   sockets[socket.request.user._id.toString()] = socket;
   const conversation = await loadMessages(socket.request.conversationId)
   console.log("Called init for conversation ", socket.request.conversationId, conversation.messages)
