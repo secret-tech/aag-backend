@@ -7,8 +7,8 @@ export const listConversations = ({body, params, user}, res, next) => {
     User.findOne({ email: user.email })
         .populate({path: 'conversations', populate: { path: 'userOne' }})
         .populate({path: 'conversations', populate: { path: 'userTwo' }})
-        .then((user) => {
-            const conversations = user.conversations.map(async (conversation) => {
+        .then(async (user) => {
+            const conversations = await user.conversations.map(async (conversation) => {
                 const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
                 if (conversation.messages.length > 0) {
                     return Message.findById(conversation.messages[conversation.messages.length - 1]).then((message) => {
