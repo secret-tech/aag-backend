@@ -43,13 +43,11 @@ setImmediate(() => {
 
 sock.on('connection', async (socket) => {
   
-  socket.on('init', async (initData) => {
-    console.log("Called init")
-    sockets[socket.request.user._id.toString()] = socket;
-    const conversation = await loadMessages(initData.conversationId)
-    console.log("Called init for conversation ", initData.conversationId, conversation.messages)
-    sockets[socket.request.user._id.toString()].emit('loadMessages', conversation.messages)
-  });
+  console.log("conv_id: ", socket.request.conversationId, socket.request)
+  sockets[socket.request.user._id.toString()] = socket;
+  const conversation = await loadMessages(socket.request.conversationId)
+  console.log("Called init for conversation ", socket.request.conversationId, conversation.messages)
+  sockets[socket.request.user._id.toString()].emit('loadMessages', conversation.messages)
 
   socket.on('message', (message) => {
     if (sockets[message.receiverId]) {
