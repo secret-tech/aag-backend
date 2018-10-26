@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 
 const messageSchema = new Schema({
+    _id: { type: String},
     text: String,
     createdAt: {
         type: Date,
