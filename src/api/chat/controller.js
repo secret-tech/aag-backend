@@ -74,7 +74,7 @@ export const createMessage = (message) => {
 
 export const loadMessages = async (user, conversationId) => {
     const conversation = await Conversation.findById(conversationId)
-        .populate('messages')
+        .populate({path: 'messages', populate: { path: 'user' }})
         .populate('userOne')
         .populate('userTwo')
     const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
