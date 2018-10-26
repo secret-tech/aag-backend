@@ -17,7 +17,6 @@ export const listConversations = ({body, params, user}, res, next) => {
                     friend
                 }
             })
-            console.log(conversations);
             res.status(200).json({ conversations })
         })
 }
