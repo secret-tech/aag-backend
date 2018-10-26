@@ -72,7 +72,7 @@ export const createMessage = (message) => {
 }
 
 export const loadMessages = (conversationId) => {
-    Conversation.findById(request.params.conversationId).populate('messages').then((conversation) => {
+    Conversation.findById(conversationId).populate('messages').then((conversation) => {
         return conversation
     })
 }
