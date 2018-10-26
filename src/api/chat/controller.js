@@ -71,8 +71,6 @@ export const createMessage = (message) => {
     })
 }
 
-export const loadMessages = (conversationId) => {
-    Conversation.findById(conversationId).populate('messages').then((conversation) => {
-        return conversation
-    })
+export const loadMessages = async (conversationId) => {
+    return await Conversation.findById(conversationId).populate('messages')
 }

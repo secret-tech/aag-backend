@@ -45,6 +45,7 @@ sock.on('connection', async (socket, conversationId) => {
   
   sockets[socket.request.user._id.toString()] = socket;
   const conversation = await loadMessages(socket.handshake.query.conversationId)
+  console.log("Conversation: ", conversation)
   sockets[socket.request.user._id.toString()].emit('loadMessages', conversation.messages)
 
   socket.on('message', (message) => {
