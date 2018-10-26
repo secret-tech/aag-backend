@@ -33,7 +33,8 @@ export const createConversation = ({ body, params, user }, res, next) => {
                 res.status(200).json({ conversation: {
                     _id: conversation._id,
                     messages: conversation.messages,
-                    friend
+                    friend,
+                    user
                 } })
             })
         } else {
