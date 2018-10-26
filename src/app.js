@@ -43,7 +43,8 @@ setImmediate(() => {
 
 sock.on('connection', async (socket) => {
   
-  sock.on('init', async (initData) => {
+  socket.on('init', async (initData) => {
+    console.log("Called init")
     sockets[socket.request.user._id.toString()] = socket;
     const conversation = await loadMessages(initData.conversationId)
     console.log("Called init for conversation ", initData.conversationId, conversation.messages)
