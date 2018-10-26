@@ -52,7 +52,8 @@ export const createConversation = ({ body, params, user }, res, next) => {
                         _id: conversation._id,
                         messages: conversation.messages,
                         friend,
-                        user
+                        user,
+                        body
                     });
                     res.status(200).json({ conversation: {
                         _id: conversation._id,
