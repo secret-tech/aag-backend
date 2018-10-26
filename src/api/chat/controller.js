@@ -25,13 +25,13 @@ export const listConversations = ({body, params, user}, res, next) => {
 }
 
 export const conversationsSocket = async (user) => {
-    const user = await User.findOne({ email: user.email })
+    const conversationsUser = await User.findOne({ email: user.email })
         .populate({path: 'conversations', populate: { path: 'userOne' }})
         .populate({path: 'conversations', populate: { path: 'userTwo' }})
         .populate({path: 'conversations', populate: {
             path: 'messages', populate: { path: 'user' }, options: { limit: 30, sort: {createdAt: -1} } 
         }})
-    const conversations = await user.conversations.map((conversation) => {
+    const conversations = await conversationsUser.conversations.map((conversation) => {
         const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
         return {
             _id: conversation._id,
