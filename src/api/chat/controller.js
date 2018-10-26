@@ -2,35 +2,13 @@ import User from '../user/model'
 import Conversation  from './conversation.model'
 import Message from './message.model'
 
-
-export const listConversations = ({body, params, user}, res, next) => {
-    User.findOne({ email: user.email })
-        .populate({path: 'conversations', populate: { path: 'userOne' }})
-        .populate({path: 'conversations', populate: { path: 'userTwo' }})
-        .populate({path: 'conversations', populate: {
-            path: 'messages', populate: { path: 'user' }, options: { limit: 30, sort: {createdAt: -1} } 
-        }})
-        .then(async (user) => {
-            const conversations = await user.conversations.map((conversation) => {
-                const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
-                return {
-                    _id: conversation._id,
-                    messages: conversation.messages,
-                    friend,
-                    user
-                }
-            })
-            res.status(200).json({ conversations })
-        })
-}
-
-export const conversationsSocket = async (user) => {
+export const listConversations = async (user) => {
     const conversationsUser = await User.findOne({ email: user.email })
         .populate({path: 'conversations', populate: { path: 'userOne' }})
         .populate({path: 'conversations', populate: { path: 'userTwo' }})
         .populate({path: 'conversations', populate: {
             path: 'messages', populate: { path: 'user' }, options: { limit: 30, sort: {createdAt: -1} } 
-        }})
+    }})
     const conversations = await conversationsUser.conversations.map((conversation) => {
         const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
         return {

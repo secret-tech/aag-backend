@@ -4,7 +4,7 @@ import mongoose from './services/mongoose'
 import express from './services/express'
 import api from './api'
 import * as socketio from 'socket.io';
-import { createMessage, loadMessages, conversationsSocket } from './api/chat/controller'
+import { createMessage, listConversations } from './api/chat/controller'
 import { verify } from './services/jwt'
 import User from './api/user/model'
 
@@ -44,9 +44,8 @@ setImmediate(() => {
 sock.on('connection', async (socket, conversationId) => {
   const user = socket.request.user
   sockets[user._id.toString()] = socket
-  const conversations = await conversationsSocket(user)
+  const conversations = await listConversations(user)
   sockets[user._id.toString()].emit('loadConversations', conversations)
-  // const conversation = await loadMessages(socket.request.user, socket.handshake.query.conversationId)
   socket.on('message', async (message) => {
     if (sockets[message.receiverId]) {
       const textMessage = await createMessage(message)
