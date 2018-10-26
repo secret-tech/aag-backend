@@ -48,10 +48,10 @@ sock.on('connection', async (socket, conversationId) => {
   sockets[socket.request.user._id.toString()].emit('loadConversation', conversation)
   socket.on('message', async (message) => {
     if (sockets[message.receiverId]) {
-      sockets[message.receiverId].emit('message', message);
+      const textMessage = await createMessage(message)
+      textMessage.user = await User.findById(textMessage.user)
+      sockets[message.receiverId].emit('message', textMessage);
     }
-    const textMessage = await createMessage(message)
-    console.log(textMessage)
   });
   
   socket.on('disconnect', (userId) => {
