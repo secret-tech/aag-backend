@@ -47,9 +47,9 @@ sock.on('connection', async (socket, conversationId) => {
   const conversations = await listConversations(user)
   sockets[user._id.toString()].emit('loadConversations', conversations)
   socket.on('message', async (message) => {
-    console.log("Received messsage", message);
     if (sockets[message.receiverId]) {
       const textMessage = await createMessage(message)
+      console.log("Text message: ", textMessage)
       textMessage.user = await User.findById(textMessage.user)
       sockets[message.receiverId].emit('message', textMessage);
     }
