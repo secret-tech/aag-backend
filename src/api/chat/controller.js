@@ -24,6 +24,25 @@ export const listConversations = ({body, params, user}, res, next) => {
         })
 }
 
+export const conversationsSocket = async (user) => {
+    const user = await User.findOne({ email: user.email })
+        .populate({path: 'conversations', populate: { path: 'userOne' }})
+        .populate({path: 'conversations', populate: { path: 'userTwo' }})
+        .populate({path: 'conversations', populate: {
+            path: 'messages', populate: { path: 'user' }, options: { limit: 30, sort: {createdAt: -1} } 
+        }})
+    const conversations = await user.conversations.map((conversation) => {
+        const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+        return {
+            _id: conversation._id,
+            messages: conversation.messages,
+            friend,
+            user
+        }
+    })
+    return conversations
+}
+
 export const createConversation = ({ body, params, user }, res, next) => {
     User.findOne({ email: user.email }).populate('conversations').then((user) => {
         const existingConversations = user.conversations.filter((conversation) => {
