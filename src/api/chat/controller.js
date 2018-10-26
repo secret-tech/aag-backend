@@ -59,18 +59,16 @@ export const createConversation = ({ body, params, user }, res, next) => {
 }
 
 
-export const createMessage = (message) => {
-    Conversation.findById(message.conversationId).then((conversation) => {
-        const textMessage = new Message({
-          text: message.text,
-          user: message.senderId,
-        })
-        textMessage.save().then((savedMessage) => {
-          conversation.messages.push(savedMessage);
-          conversation.save()
-        })
-        return textMessage;
+export const createMessage = async (message) => {
+    const conversation = await Conversation.findById(message.conversationId)
+    const textMessage = new Message({
+        text: message.text,
+        user: message.senderId,
     })
+    const savedMessage = await textMessage.save()
+    conversation.messages.push(savedMessage)
+    await conversation.save()
+    return savedMessage;
 }
 
 export const loadMessages = async (user, conversationId) => {
@@ -79,7 +77,6 @@ export const loadMessages = async (user, conversationId) => {
         .populate('userOne')
         .populate('userTwo')
     const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
-    console.log("Messages: ", conversation.messages)
     return {
         _id: conversation._id,
         messages: conversation.messages,
