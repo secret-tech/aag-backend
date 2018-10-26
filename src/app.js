@@ -4,7 +4,7 @@ import mongoose from './services/mongoose'
 import express from './services/express'
 import api from './api'
 import * as socketio from 'socket.io';
-import { createMessage, listConversations } from './api/chat/controller'
+import { createMessage, listConversations, loadMessages } from './api/chat/controller'
 import { verify } from './services/jwt'
 import User from './api/user/model'
 
@@ -53,6 +53,11 @@ sock.on('connection', async (socket, conversationId) => {
       sockets[message.receiverId].emit('message', textMessage);
     }
   });
+
+  socket.on('loadMessages', async (request) => {
+    const messages = await loadMessages(user, request.conversationId)
+    sockets[user._id.toString()].emit('messages', messages)
+  })
   
   socket.on('disconnect', (userId) => {
     delete sockets[userId.senderId];
