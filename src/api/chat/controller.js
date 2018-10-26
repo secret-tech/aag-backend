@@ -71,6 +71,12 @@ export const createMessage = (message) => {
     })
 }
 
-export const loadMessages = async (conversationId) => {
-    return await Conversation.findById(conversationId).populate('messages')
+export const loadMessages = async (user, conversationId) => {
+    const conversation = await Conversation.findById(conversationId).populate('messages')
+    const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+    return {
+        _id: conversation._id,
+        messages: conversation.messages,
+        friend
+    }
 }
