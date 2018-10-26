@@ -79,6 +79,7 @@ export const loadMessages = async (user, conversationId) => {
         .populate('userOne')
         .populate('userTwo')
     const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+    console.log("hey ", user, conversation, friend)
     return {
         _id: conversation._id,
         messages: conversation.messages,
