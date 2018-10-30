@@ -23,6 +23,7 @@ const userSchema = new Schema({
     type: String,
     enum: genders,
     required: true,
+    default: 'male'
   },
   birthday: {
     type: Date,
