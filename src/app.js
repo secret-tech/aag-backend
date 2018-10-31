@@ -7,6 +7,7 @@ import * as socketio from 'socket.io';
 import { createMessage, listConversations, loadMessages } from './api/chat/controller'
 import { verify } from './services/jwt'
 import User from './api/user/model'
+import Conversation from './api/chat/conversation.model'
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
