@@ -8,7 +8,7 @@ import { createMessage, listConversations, loadMessages } from './api/chat/contr
 import { verify } from './services/jwt'
 import User from './api/user/model'
 import Conversation from './api/chat/conversation.model'
-import { Client } from 'onesignal-node'
+import { Client, Notification } from 'onesignal-node'
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
@@ -57,7 +57,7 @@ sock.on('connection', async (socket, conversationId) => {
     const textMessage = await createMessage(message)
     textMessage.user = await User.findById(textMessage.user)
     const receiver = await User.findById(message.receiverId)
-    const notification = oneSignalClient.Notification({      
+    const notification = new Notification({      
       headings: {
         en: user.name
       },
