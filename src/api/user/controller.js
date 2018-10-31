@@ -119,8 +119,9 @@ export const addFakeAdvisors = (req, res, next) => {
         picture: pictures[avatarIndex],//'https://api.adorable.io/avatars/500/' + faker.internet.email() + '.png',
         bio: faker.lorem.paragraph(),
         tags: tags,
-        featured: Math.random() < 0.1,
-        pictures
+        featured: Math.random() < 0.2,
+        pictures,
+        age: Math.floor(Math.random()*13) + 21
     }
     User.create(advisor)
   }

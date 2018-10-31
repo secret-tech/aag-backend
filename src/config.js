@@ -28,6 +28,11 @@ const config = {
     apiRoot: process.env.API_ROOT || '',
     masterKey: requireProcessEnv('MASTER_KEY'),
     jwtSecret: requireProcessEnv('JWT_SECRET'),
+    oneSignal: {
+      appId: requireProcessEnv('ONESIGNAL_APP_ID') || '',
+      apiKey: requireProcessEnv('ONESIGNAL_API_KEY') || '',
+      userKey: requireProcessEnv('ONESIGNAL_USER_KEY') || ''
+    },
     mongo: {
       options: {
         db: {

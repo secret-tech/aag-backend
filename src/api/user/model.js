@@ -34,7 +34,8 @@ const userSchema = new Schema({
     required: false
   },
   services: {
-    facebook: String
+    facebook: String,
+    oneSignal: String
   },
   role: {
     type: String,
