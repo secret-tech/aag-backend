@@ -55,20 +55,20 @@ sock.on('connection', async (socket, conversationId) => {
   sockets[user._id.toString()].emit('loadConversations', conversations)
   socket.on('message', async (message) => {
     const textMessage = await createMessage(message)
+    textMessage.user = await User.findById(textMessage.user)
+    const receiver = await User.findById(message.receiverId)
+    const notification = oneSignalClient.Notification({      
+      headings: {
+        en: user.name
+      },
+      contents: {      
+          en: message.text
+      },    
+        include_player_ids: [receiver.services.oneSignal]
+    })
+    oneSignalClient.sendNotification(notification)
     if (sockets[message.receiverId]) {
-      textMessage.user = await User.findById(textMessage.user)
       sockets[message.receiverId].emit('message', textMessage)
-      const receiver = await User.findById(message.receiverId)
-      const notification = oneSignalClient.Notification({      
-        headings: {
-          en: user.name
-        },
-        contents: {      
-            en: message.text
-        },    
-          include_player_ids: [receiver.services.oneSignal]
-      })
-      console.log("Notification response", await oneSignalClient.sendNotification(notification))
       const receiverConversations = await listConversations(receiver)
       sockets[message.receiverId].emit('loadConversations', receiverConversations)
     }
