@@ -39,8 +39,6 @@ export const createConversation = ({ body, params, user }, res, next) => {
             })
         } else {
             User.findById(body.userId).then((friend) => {
-                console.log('USER:::', user);
-                console.log('FRIEND::', friend, body)
                 const newConversation = new Conversation({
                     userOne: user._id,
                     userTwo: friend._id,

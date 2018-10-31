@@ -57,8 +57,46 @@ sock.on('connection', async (socket, conversationId) => {
     }
   });
 
+  socket.on('createConversation', async (request) => {
+    User.findOne({ email: user.email }).populate('conversations').then((user) => {
+        const existingConversations = user.conversations.filter((conversation) => {
+            return conversation.userOne.toString() === request.userId || conversation.userTwo.toString() === request.userId
+        })
+        if (existingConversations.length > 0) {
+            const conv = existingConversations[0]
+            Conversation.findById(conv._id).populate('userOne').populate('userTwo').then((conversation) => {
+                const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
+                sockets[user._id.toString].emit('conversationExists', { conversation: {
+                  _id: conversation._id,
+                  messages: conversation.messages,
+                  friend,
+                  user
+                }})
+            })
+        } else {
+            User.findById(request.userId).then((friend) => {
+                const newConversation = new Conversation({
+                    userOne: user._id,
+                    userTwo: friend._id,
+                })
+                newConversation.save().then(async (conversation) => {
+                    user.conversations.push(conversation)
+                    friend.conversations.push(conversation)
+                    await user.save()
+                    await friend.save()
+                    sockets[user._id.toString()].emit('conversationCreated', { conversation: {
+                      _id: conversation._id,
+                      messages: conversation.messages,
+                      friend,
+                      user
+                  } })
+                })
+            })
+        }
+    })
+  })
+
   socket.on('loadMessages', async (request) => {
-    console.log("LOAD MESSAGES!!!", request)
     const messages = await loadMessages(user, request.conversationId)
     sockets[user._id.toString()].emit('messages', messages)
   })
