@@ -66,7 +66,8 @@ sock.on('connection', async (socket, conversationId) => {
       },    
         include_player_ids: [receiver.services.oneSignal]
     })
-    oneSignalClient.sendNotification(notification)
+    const oneResponse = await oneSignalClient.sendNotification(notification)
+    console.log("OneSignal response: ", oneResponse)
     if (sockets[message.receiverId]) {
       sockets[message.receiverId].emit('message', textMessage)
       const receiverConversations = await listConversations(receiver)
