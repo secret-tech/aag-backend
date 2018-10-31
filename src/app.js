@@ -67,7 +67,7 @@ sock.on('connection', async (socket, conversationId) => {
             const conv = existingConversations[0]
             Conversation.findById(conv._id).populate('userOne').populate('userTwo').then((conversation) => {
                 const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
-                sockets[user._id.toString].emit('conversationExists', { conversation: {
+                sockets[user._id.toString()].emit('conversationExists', { conversation: {
                   _id: conversation._id,
                   messages: conversation.messages,
                   friend,
