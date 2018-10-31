@@ -8,5 +8,3 @@ export const login = ({ user }, res, next) => {
     .then(success(res, 201))
     .catch(next)
 }
- 
-}
