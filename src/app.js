@@ -64,7 +64,7 @@ sock.on('connection', async (socket, conversationId) => {
       contents: {      
           en: message.text
       },
-      app_url: 'chat://chat/chat/' + user._id.toString(),
+      url: 'chat://chat/chat/' + user._id.toString(),
       include_player_ids: [receiver.services.oneSignal]
     })
     await oneSignalClient.sendNotification(notification)
