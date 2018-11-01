@@ -63,11 +63,11 @@ sock.on('connection', async (socket, conversationId) => {
       },
       contents: {      
           en: message.text
-      },    
-        include_player_ids: [receiver.services.oneSignal]
+      },
+      app_url: 'chat://chat/chat/' + user._id.toString(),
+      include_player_ids: [receiver.services.oneSignal]
     })
-    const oneResponse = await oneSignalClient.sendNotification(notification)
-    console.log("OneSignal response: ", oneResponse)
+    await oneSignalClient.sendNotification(notification)
     if (sockets[message.receiverId]) {
       sockets[message.receiverId].emit('message', textMessage)
       const receiverConversations = await listConversations(receiver)
