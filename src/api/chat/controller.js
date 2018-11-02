@@ -79,13 +79,14 @@ export const loadMessages = async (user, conversationId, from = null) => {
     const conversation = await Conversation.findById(conversationId)
         .populate('userOne')
         .populate('userTwo')
+    let messages;
     if(from) {
-        const messages = await Message.find({conversationId, createdAt: {$gte: from}})
+        messages = await Message.find({conversationId, createdAt: {$gte: from}})
             .populate('user')
             .limit(50)
-            .sort({createdAt: -1})    
+            .sort({createdAt: -1})
     } else {
-        const messages = await Message.find({conversationId})
+        messages = await Message.find({conversationId})
             .populate('user')
             .limit(50)
             .sort({createdAt: -1})
