@@ -75,14 +75,21 @@ export const createMessage = async (message) => {
     return savedMessage;
 }
 
-export const loadMessages = async (user, conversationId) => {
+export const loadMessages = async (user, conversationId, from = null) => {
     const conversation = await Conversation.findById(conversationId)
         .populate('userOne')
         .populate('userTwo')
-    const messages = await Message.find({conversationId})
-        .populate('user')
-        .limit(50)
-        .sort({createdAt: -1})
+    if(from) {
+        const messages = await Message.find({conversationId, createdAt: {$gte: from}})
+            .populate('user')
+            .limit(50)
+            .sort({createdAt: -1})    
+    } else {
+        const messages = await Message.find({conversationId})
+            .populate('user')
+            .limit(50)
+            .sort({createdAt: -1})
+    }
     const friend = user._id.toString() === conversation.userOne._id.toString() ? conversation.userTwo : conversation.userOne;
     return {
         _id: conversation._id,

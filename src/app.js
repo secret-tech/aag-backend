@@ -118,6 +118,11 @@ sock.on('connection', async (socket, conversationId) => {
     const messages = await loadMessages(user, request.conversationId)
     sockets[user._id.toString()].emit('messages', messages)
   })
+
+  socket.on('fetchMoreMessages', async (request) => {
+    const messages = await loadMessages(user, request.conversationId, new Date(request.key))
+    sockets[user._id.toString()].emit('loadMoreMessages', messages)
+  })
   
   socket.on('disconnect', (userId) => {
     delete sockets[userId.senderId];
