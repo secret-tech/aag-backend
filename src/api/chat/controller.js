@@ -81,7 +81,7 @@ export const loadMessages = async (user, conversationId, from = null) => {
         .populate('userTwo')
     let messages;
     if(from) {
-        messages = await Message.find({conversationId, createdAt: {$gte: from}})
+        messages = await Message.find({conversationId, createdAt: {$gt: from}})
             .populate('user')
             .limit(50)
             .sort({createdAt: -1})
