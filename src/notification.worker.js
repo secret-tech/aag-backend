@@ -1,5 +1,6 @@
 import { redis, oneSignal } from './config'
 import Queue from 'bull'
+import { Client, Notification } from 'onesignal-node'
 
 const oneSignalClient = new Client({
     userAuthKey: oneSignal.userKey,
