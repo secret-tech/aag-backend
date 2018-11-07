@@ -119,7 +119,7 @@ sock.on('connection', async (socket, conversationId) => {
                       },
                       include_player_ids: [user.services.oneSignal]
                     }
-                    notificationQueue.add(notification, { delay: 60000}) //delay 10 minutes = 600000
+                    notificationQueue.add(notification, { delay: 300000}) //delay 10 minutes = 600000
                     sockets[user._id.toString()].emit('conversationCreated', { conversation: {
                       _id: conversation._id,
                       messages: conversation.messages,
