@@ -104,7 +104,7 @@ sock.on('connection', async (socket, conversationId) => {
                     friend.conversations.push(conversation)
                     await user.save()
                     await friend.save()
-                    const notification = new Notification({      
+                    const notification = {      
                       headings: {
                         en: "Rate " + friend.name
                       },
@@ -118,7 +118,7 @@ sock.on('connection', async (socket, conversationId) => {
                         userName: friend.name
                       },
                       include_player_ids: [user.services.oneSignal]
-                    })
+                    }
                     notificationQueue.add(notification, { delay: 60000}) //delay 10 minutes = 600000
                     sockets[user._id.toString()].emit('conversationCreated', { conversation: {
                       _id: conversation._id,
