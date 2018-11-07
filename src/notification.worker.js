@@ -1,5 +1,5 @@
 import { redis, oneSignal } from './config'
-import * as Queue from 'bull'
+import Queue from 'bull'
 
 const oneSignalClient = new Client({
     userAuthKey: oneSignal.userKey,
