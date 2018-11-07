@@ -70,9 +70,11 @@ export const destroy = ({ params }, res, next) =>
 
 
 export const rate = (req, res, next) => {
+  console.log("UserId: ", req.body.id, req.body.rating)
   User.findById(req.body.id)
     .then(notFound(res))
     .then((user) => {
+      console.log("User: ", user)
       const success = user.rate(user, req.body.rating)
       res.status(200).json({success})
     })
@@ -111,7 +113,6 @@ export const addFakeAdvisors = (req, res, next) => {
     'https://images.pexels.com/photos/206434/pexels-photo-206434.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
     'https://images.pexels.com/photos/185517/pexels-photo-185517.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
   ]
-  console.log("Start faking data")
   for(let i = 0; i < 100; i++)  {
     let tags = []
     const kw =  Math.floor(Math.random()*10) + 1
