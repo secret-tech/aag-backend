@@ -136,7 +136,7 @@ userSchema.statics = {
     if (rating === 0) return false
     return this.find({ _id: target._id, 'ratings.user': user._id })
       .then(async (users) => {
-        if (users.length === 0) return false
+        if (users.length !== 0) return false
         if (target.ratings.length === 0) {
           target.rating = rating
           console.log("Set rating of " + target.name + ' to ' + rating)
