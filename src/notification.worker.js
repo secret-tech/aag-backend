@@ -9,8 +9,8 @@ const oneSignalClient = new Client({
 const notificationQueue = new Queue('rating-notifications', redis.url)
 
 notificationQueue.process(async (job, data) => {
-    console.log("Data: ", typeof data, data)
-    await oneSignalClient.sendNotification(new Notification(data))
+    console.log("Data: ", typeof job.data, job.data)
+    await oneSignalClient.sendNotification(new Notification(job.data))
 });
 
 notificationQueue.on('completed', job => {
