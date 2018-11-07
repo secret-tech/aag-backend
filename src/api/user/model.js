@@ -138,13 +138,12 @@ userSchema.statics = {
       .then(async (users) => {
         if (users.length !== 0) return false
         if (target.ratings.length === 0) {
-          target.rating = rating
-          console.log("Set rating of " + target.name + ' to ' + rating)
+          target.rating = parseInt(rating)
         } else {
-          target.rating = ((target.rating * target.ratings.length) + rating) / (target.ratings.length + 1)  
+          target.rating = ((parseFloat(target.rating) * target.ratings.length) + parseFloat(rating)) / (target.ratings.length + 1)
         }
-        target.ratings.push({ user:  user._id, target: target._id, rating })
-        console.log("Soooo, ratings array is now: ", target.ratings);
+        target.ratings.push({ user:  user._id, target: target._id, rating: parseFloat(rating) })
+        target.rating = target.rating.toFixed(1)
         await target.save()
         return true
       })
