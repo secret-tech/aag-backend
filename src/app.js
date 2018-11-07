@@ -69,7 +69,8 @@ sock.on('connection', async (socket, conversationId) => {
       url: 'askagirl://app/chat/conversation/' + user._id.toString(),
       include_player_ids: [receiver.services.oneSignal]
     })
-    await oneSignalClient.sendNotification(notification)
+    const response = await oneSignalClient.sendNotification(notification)
+    console.log('Resp: ', response)
     if (sockets[message.receiverId]) {
       sockets[message.receiverId].emit('message', textMessage)
       const receiverConversations = await listConversations(receiver)
