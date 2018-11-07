@@ -20,7 +20,7 @@ const oneSignalClient = new Client({
   userAuthKey: oneSignal.userKey,
   app: { appAuthKey: oneSignal.apiKey, appId: oneSignal.appId }
 })
-const notificationQueue = new Queue.Queue('rating-notifications', redis.url)
+const notificationQueue = new Queue('rating-notifications', redis.url)
 
 
 io.use(async (socket, next) => {
