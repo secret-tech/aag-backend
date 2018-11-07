@@ -1,6 +1,7 @@
-import crypto from 'crypto'
+import crypto, { timingSafeEqual } from 'crypto'
 import mongoose, { Schema } from 'mongoose'
 import mongooseKeywords from 'mongoose-keywords'
+import RatingSchema from './rating.model'
 
 const roles = ['user', 'advisor', 'admin']
 const genders = ['male', 'female', 'other']
@@ -25,6 +26,11 @@ const userSchema = new Schema({
     required: true,
     default: 'male'
   },
+  rating: {
+    type: Number,
+    default: 0
+  },
+  ratings: [ RatingSchema ],
   birthday: {
     type: Date,
     required: false,
@@ -79,7 +85,7 @@ userSchema.path('email').set(function (email) {
 userSchema.methods = {
   view (full) {
     let view = {}
-    let fields = ['id', 'name', 'picture', 'gender', 'age', 'role', 'tags']
+    let fields = ['id', 'name', 'picture', 'gender', 'age', 'role', 'tags', 'rating']
 
     if (full) {
       fields = [...fields, 'email', 'createdAt', 'bio', 'pictures']
@@ -125,6 +131,17 @@ userSchema.statics = {
     return this.find({role: 'advisor'}, {}, cursor).then((users) => {
       return users
     })
+  },
+  rate (user, rating) {
+    if (rating === 0) return false
+    return this.find({ _id: this._id, 'ratings.user': user._id })
+      .then(async (users) => {
+        if (users) return false
+        this.rating = ((this.rating * this.ratings.length) + rating) / (this.ratings.length + 1)
+        this.ratings.push({ user:  user._id, target: this._id, rating })
+        await this.save()
+        return true
+      })
   }
 }
 

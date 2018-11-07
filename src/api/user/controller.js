@@ -69,6 +69,15 @@ export const destroy = ({ params }, res, next) =>
     .catch(next)
 
 
+export const rate = ({bodymen: {body}, params, user}, res, next) => {
+  User.findById(body.id)
+    .then(notFound(res))
+    .then((user) => {
+      const success = user.rate(user, body.rating)
+      res.status(200).json({success})
+    })
+}
+
 export const updateTags = ({bodymen: {body}, params, user}, res, next) => {
   User.findById(user.id)
     .then(notFound(res))
@@ -76,7 +85,7 @@ export const updateTags = ({bodymen: {body}, params, user}, res, next) => {
       user.tags = body.tags
       user.save()
       res.status(200).json(user)
-    });
+    })
 }
 
 
