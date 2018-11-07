@@ -9,7 +9,7 @@ import { verify } from './services/jwt'
 import User from './api/user/model'
 import Conversation from './api/chat/conversation.model'
 import { Client, Notification } from 'onesignal-node'
-import * as Queue from 'bull';
+import { Queue } from 'bull';
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
