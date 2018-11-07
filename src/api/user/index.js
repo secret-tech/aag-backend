@@ -73,7 +73,6 @@ router.post('/',
 
   router.post('/rate',
     token({required: true}),
-    body({ id, rating }),
     rate)
 
 router.post('/tags',
