@@ -137,7 +137,11 @@ userSchema.statics = {
     return this.find({ _id: this._id, 'ratings.user': user._id })
       .then(async (users) => {
         if (users) return false
-        this.rating = ((this.rating * this.ratings.length) + rating) / (this.ratings.length + 1)
+        if (this.ratings.length === 0) {
+          this.rating = rating
+        } else {
+          this.rating = ((this.rating * this.ratings.length) + rating) / (this.ratings.length + 1)  
+        }
         this.ratings.push({ user:  user._id, target: this._id, rating })
         await this.save()
         return true
