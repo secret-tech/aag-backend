@@ -39,6 +39,9 @@ const config = {
           safe: true
         }
       }
+    },
+    redis: {
+      url: requireProcessEnv('REDIS_URL') || ''
     }
   },
   test: { },

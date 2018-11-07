@@ -1,5 +1,5 @@
 import http from 'http'
-import { env, mongo, port, ip, apiRoot, oneSignal } from './config'
+import { env, mongo, redis, port, ip, apiRoot, oneSignal } from './config'
 import mongoose from './services/mongoose'
 import express from './services/express'
 import api from './api'
@@ -9,6 +9,7 @@ import { verify } from './services/jwt'
 import User from './api/user/model'
 import Conversation from './api/chat/conversation.model'
 import { Client, Notification } from 'onesignal-node'
+import * as Queue from 'bull';
 
 const app = express(apiRoot, api)
 const server = http.createServer(app)
@@ -19,6 +20,7 @@ const oneSignalClient = new Client({
   userAuthKey: oneSignal.userKey,
   app: { appAuthKey: oneSignal.apiKey, appId: oneSignal.appId }
 })
+const notificationQueue = new Queue('rating-notifications', redis.url)
 
 
 io.use(async (socket, next) => {
@@ -102,6 +104,22 @@ sock.on('connection', async (socket, conversationId) => {
                     friend.conversations.push(conversation)
                     await user.save()
                     await friend.save()
+                    const notification = new Notification({      
+                      headings: {
+                        en: "Rate " + friend.name
+                      },
+                      contents: {      
+                          en: "How was your conversation with " + friend.name + "?"
+                      },
+                      data: {
+                        review: true,
+                        userId: friend._id.toString(),
+                        userPicture: friend.picture,
+                        userName: friend.name
+                      },
+                      include_player_ids: [user.services.oneSignal]
+                    })
+                    notificationQueue.add(notification, { delay: 60000}) //delay 10 minutes = 600000
                     sockets[user._id.toString()].emit('conversationCreated', { conversation: {
                       _id: conversation._id,
                       messages: conversation.messages,
