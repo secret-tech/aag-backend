@@ -139,10 +139,12 @@ userSchema.statics = {
         if (users.length === 0) return false
         if (target.ratings.length === 0) {
           target.rating = rating
+          console.log("Set rating of " + target.name + ' to ' + rating)
         } else {
-          target.rating = ((this.rating * this.ratings.length) + rating) / (this.ratings.length + 1)  
+          target.rating = ((target.rating * target.ratings.length) + rating) / (target.ratings.length + 1)  
         }
-        target.ratings.push({ user:  user._id, target: this._id, rating })
+        target.ratings.push({ user:  user._id, target: target._id, rating })
+        console.log("Soooo, ratings array is now: ", target.ratings);
         await target.save()
         return true
       })
