@@ -70,11 +70,10 @@ export const destroy = ({ params }, res, next) =>
 
 
 export const rate = (req, res, next) => {
-  console.log(req.user)
   User.findById(req.body.id)
     .then(notFound(res))
     .then((target) => {
-      const success = user.rate(req.user, target, req.body.rating)
+      const success = User.rate(req.user, target, req.body.rating)
       res.status(200).json({success})
     })
 }
