@@ -132,18 +132,18 @@ userSchema.statics = {
       return users
     })
   },
-  rate (user, rating) {
+  rate (user, target, rating) {
     if (rating === 0) return false
-    return this.find({ _id: this._id, 'ratings.user': user._id })
+    return this.find({ _id: target._id, 'ratings.user': user._id })
       .then(async (users) => {
         if (users) return false
-        if (this.ratings.length === 0) {
-          this.rating = rating
+        if (target.ratings.length === 0) {
+          target.rating = rating
         } else {
-          this.rating = ((this.rating * this.ratings.length) + rating) / (this.ratings.length + 1)  
+          target.rating = ((this.rating * this.ratings.length) + rating) / (this.ratings.length + 1)  
         }
-        this.ratings.push({ user:  user._id, target: this._id, rating })
-        await this.save()
+        target.ratings.push({ user:  user._id, target: this._id, rating })
+        await target.save()
         return true
       })
   }
