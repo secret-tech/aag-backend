@@ -1,18 +1,16 @@
-import { redis, oneSignal } from './config'
-import Queue from 'bull'
-import { Client, Notification } from 'onesignal-node'
+import { ratingNotificationQueue, messageNotificationQueue } from './services/queue'
+import { processRateAdvisorNotificationQueue, processMessageNotificationQueue } from './services/notification'
 
-const oneSignalClient = new Client({
-    userAuthKey: oneSignal.userKey,
-    app: { appAuthKey: oneSignal.apiKey, appId: oneSignal.appId }
-})
-const notificationQueue = new Queue('rating-notifications', redis.url)
-
-notificationQueue.process(async (job) => {
-    await oneSignalClient.sendNotification(new Notification(job.data))
+ratingNotificationQueue.process(async (job) => {
+    await processRateAdvisorNotificationQueue(job.data)
     return true
-});
+})
 
-notificationQueue.on('completed', job => {
-    console.log('Job with id ' + job.id + ' has been completed');
+messageNotificationQueue.process(async (job) => {
+    await processMessageNotificationQueue(job.data)
+    return true
+})
+
+ratingNotificationQueue.on('completed', job => {
+    console.log('Rating job with id ' + job.id + ' has been completed');
 })
